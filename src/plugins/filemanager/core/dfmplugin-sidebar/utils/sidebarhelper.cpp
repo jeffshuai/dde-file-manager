@@ -177,7 +177,7 @@ void SideBarHelper::updateSideBarSelection(quint64 winId)
     for (auto sb : all) {
         if (!sb || SideBarHelper::windowId(sb) == winId)
             continue;
-        sb->updateSelection();
+        sb->groupTreeWidget()->updateSelection();
     }
 }
 

@@ -55,7 +55,7 @@ void SideBar::onWindowOpened(quint64 windId)
 
     window->installSideBar(sidebar);
 
-    sidebar->updateItemVisiable(SideBarHelper::hiddenRules());
+    sidebar->groupTreeWidget()->updateItemVisiable(SideBarHelper::hiddenRules());
 }
 
 void SideBar::onWindowClosed(quint64 winId)
@@ -65,7 +65,7 @@ void SideBar::onWindowClosed(quint64 winId)
         if (win) {
             SideBarWidget *sb = dynamic_cast<SideBarWidget *>(win->sideBar());
             if (sb)
-                sb->saveStateWhenClose();
+                sb->groupTreeWidget()->saveStateWhenClose();
         }
     }
 
@@ -83,7 +83,7 @@ void SideBar::onConfigChanged(const QString &cfg, const QString &key)
             if (win) {
                 auto sb = dynamic_cast<SideBarWidget *>(win->sideBar());
                 if (sb) {
-                    sb->updateItemVisiable(SideBarHelper::hiddenRules());
+                    sb->groupTreeWidget()->updateItemVisiable(SideBarHelper::hiddenRules());
                 }
             }
         }
@@ -96,7 +96,7 @@ void SideBar::onConfigChanged(const QString &cfg, const QString &key)
         if (win) {
             auto sb = dynamic_cast<SideBarWidget *>(win->sideBar());
             if (sb) {
-                sb->updateItemVisiable(SideBarHelper::groupExpandRules());
+                sb->groupTreeWidget()->updateItemVisiable(SideBarHelper::groupExpandRules());
             }
         }
     }

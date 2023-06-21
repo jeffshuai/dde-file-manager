@@ -679,7 +679,7 @@ void SideBarView::updateSeparatorVisibleState()
         if (win) {
             SideBarWidget *sb = dynamic_cast<SideBarWidget *>(win->sideBar());
             if (sb) {
-                SideBarView *view = dynamic_cast<SideBarView *>(sb->view());
+                SideBarView *view = dynamic_cast<SideBarView *>(sb->groupTreeWidget()->view());
                 if (view) {
                     lastWindowGroupState = view->groupExpandState();
                     if (!lastWindowGroupState.isEmpty())

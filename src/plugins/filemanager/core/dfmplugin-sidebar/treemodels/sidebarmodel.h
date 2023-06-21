@@ -35,7 +35,6 @@ public:
     QModelIndex findRowByUrl(const QUrl &url) const;
 
 private:
-    QMutex locker;
     mutable SideBarItem *curDragItem { nullptr };
 };
 

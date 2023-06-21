@@ -47,7 +47,7 @@ void SideBarEventReceiver::handleItemHidden(const QUrl &url, bool visible)
 
     QList<SideBarWidget *> allSideBar = SideBarHelper::allSideBar();
     for (SideBarWidget *sidebar : allSideBar)
-        sidebar->setItemVisiable(url, visible);
+        sidebar->groupTreeWidget()->setItemVisiable(url, visible);
 }
 
 void SideBarEventReceiver::handleItemTriggerEdit(quint64 winId, const QUrl &url)
@@ -55,7 +55,7 @@ void SideBarEventReceiver::handleItemTriggerEdit(quint64 winId, const QUrl &url)
     QList<SideBarWidget *> allSideBar = SideBarHelper::allSideBar();
     for (SideBarWidget *sidebar : allSideBar) {
         if (SideBarHelper::windowId(sidebar) == winId)
-            sidebar->editItem(url);
+            sidebar->groupTreeWidget()->editItem(url);
     }
 }
 
@@ -64,7 +64,7 @@ void SideBarEventReceiver::handleSidebarUpdateSelection(quint64 winId)
     QList<SideBarWidget *> allSideBar = SideBarHelper::allSideBar();
     for (SideBarWidget *sidebar : allSideBar) {
         if (SideBarHelper::windowId(sidebar) == winId) {
-            sidebar->updateSelection();
+            sidebar->groupTreeWidget()->updateSelection();
             break;
         }
     }
@@ -80,16 +80,16 @@ QList<QUrl> SideBarEventReceiver::handleGetGroupItems(quint64 winId, const QStri
     if (group.isEmpty())
         return {};
 
-    SideBarWidget *wid { nullptr };
+    SideBarWidget *widget { nullptr };
     for (auto sb : SideBarHelper::allSideBar()) {
         if (FMWindowsIns.findWindowId(sb) == winId) {
-            wid = sb;
+            widget = sb;
             break;
         }
     }
 
-    if (wid)
-        return wid->findItems(group);
+    if (widget)
+        return widget->groupTreeWidget()->findItems(group);
 
     qDebug() << "cannot find sidebarwidget for winid: " << winId << group;
     return {};
@@ -107,7 +107,7 @@ bool SideBarEventReceiver::handleItemAdd(const QUrl &url, const QVariantMap &pro
         SideBarItem *item = SideBarHelper::createItemByInfo(info);
         auto sidebar = allSideBar.first();
         if (item) {
-            if (sidebar->addItem(item) == -1)
+            if (sidebar->groupTreeWidget()->addItem(item) == -1)
                 return false;
             // for select to computer
             QUrl &&itemUrl = item->url();
@@ -125,9 +125,12 @@ bool SideBarEventReceiver::handleItemAdd(const QUrl &url, const QVariantMap &pro
 
 bool SideBarEventReceiver::handleItemRemove(const QUrl &url)
 {
-    SideBarInfoCacheMananger::instance()->removeItemInfoCache(url);
-    if (SideBarWidget::kSidebarModelIns)
-        return SideBarWidget::kSidebarModelIns->removeRow(url);
+    QList<SideBarWidget *> allSideBar = SideBarHelper::allSideBar();
+    if (!allSideBar.isEmpty()) {
+        auto sidebar = allSideBar.first();
+        SideBarInfoCacheMananger::instance()->removeItemInfoCache(url);
+        return sidebar->groupTreeWidget()->removeItem(url);
+    }
     return false;
 }
 
@@ -174,7 +177,7 @@ bool SideBarEventReceiver::handleItemUpdate(const QUrl &url, const QVariantMap &
             ret = SideBarInfoCacheMananger::instance()->addItemInfoCache(info);
         else
             ret = SideBarInfoCacheMananger::instance()->updateItemInfoCache(url, info);
-        allSideBar.first()->updateItem(url, info);
+        allSideBar.first()->groupTreeWidget()->updateItem(url, info);
         return ret;
     }
 
@@ -195,7 +198,7 @@ bool SideBarEventReceiver::handleItemInsert(int index, const QUrl &url, const QV
         SideBarItem *item = SideBarHelper::createItemByInfo(info);
         auto sidebar = allSideBar.first();
         if (item) {
-            bool ret = sidebar->insertItem(index, item);
+            bool ret = sidebar->groupTreeWidget()->insertItem(index, item);
             QUrl &&itemUrl = item->url();
             QUrl &&sidebarUrl = sidebar->currentUrl().url();
             if (itemUrl.scheme() == sidebarUrl.scheme() && itemUrl.path() == sidebarUrl.path())

@@ -11,7 +11,6 @@
 
 namespace dfmplugin_sidebar {
 
-class SideBarWidget;
 class SideBar : public dpf::Plugin
 {
     Q_OBJECT
