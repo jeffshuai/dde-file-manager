@@ -16,6 +16,7 @@ class QStackedLayout;
 
 namespace dfmplugin_sidebar {
 
+class ControlBar;
 class SideBarWidget : public DFMBASE_NAMESPACE::AbstractFrame
 {
     Q_OBJECT
@@ -36,6 +37,7 @@ private:
     QStackedLayout *subWidgetsStackLayout { nullptr };
     GroupTreeWidget *groupWidget { nullptr };
     FileTreeWidget *fileWidget { nullptr };
+    ControlBar *controlBar { nullptr };
 };
 
 }   // namespace dfmplugin_sidebar
