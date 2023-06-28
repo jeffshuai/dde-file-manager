@@ -131,7 +131,8 @@ void FileView::setViewMode(Global::ViewMode mode)
             updateListHeaderView();
         }
         break;
-    case Global::ViewMode::kExtendMode:
+    case Global::ViewMode::kTreeMode:
+        qDebug() << "switch to treemode!";
         break;
     case Global::ViewMode::kAllViewMode:
         break;
@@ -469,11 +470,20 @@ void FileView::delayUpdateStatusBar()
 
 void FileView::viewModeChanged(quint64 windowId, int viewMode)
 {
+    Q_UNUSED(windowId);
     Global::ViewMode mode = static_cast<Global::ViewMode>(viewMode);
-    if (mode == Global::ViewMode::kIconMode) {
-        setViewModeToIcon();
-    } else if (mode == Global::ViewMode::kListMode) {
-        setViewModeToList();
+    switch (mode) {
+    case Global::ViewMode::kIconMode:
+        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kIconMode);
+        break;
+    case Global::ViewMode::kListMode:
+        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kListMode);
+        break;
+    case Global::ViewMode::kTreeMode:
+        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kTreeMode);
+        break;
+    default:
+        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kIconMode);
     }
 
     setFocus();
@@ -1438,6 +1448,7 @@ void FileView::initializeDelegate()
     d->fileViewHelper = new FileViewHelper(this);
     setDelegate(Global::ViewMode::kIconMode, new IconItemDelegate(d->fileViewHelper));
     setDelegate(Global::ViewMode::kListMode, new ListItemDelegate(d->fileViewHelper));
+    setDelegate(Global::ViewMode::kTreeMode, new ListItemDelegate(d->fileViewHelper));   // TODO
 }
 
 void FileView::initializeStatusBar()

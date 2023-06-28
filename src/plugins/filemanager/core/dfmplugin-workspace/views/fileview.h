@@ -86,15 +86,6 @@ public:
     void setFilterData(const QUrl &url, const QVariant &data);
     void setFilterCallback(const QUrl &url, const FileViewFilterCallback callback);
 
-    inline void setViewModeToList()
-    {
-        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kListMode);
-    }
-    inline void setViewModeToIcon()
-    {
-        setViewMode(DFMBASE_NAMESPACE::Global::ViewMode::kIconMode);
-    }
-
     void setAlwaysOpenInCurrentWindow(bool openInCurrentWindow);
 
     BaseItemDelegate *itemDelegate() const;

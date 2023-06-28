@@ -15,7 +15,7 @@
 #include <DGuiApplicationHelper>
 #include <dtkwidget_global.h>
 #ifdef DTKWIDGET_CLASS_DSizeMode
-#include <DSizeMode>
+#    include <DSizeMode>
 #endif
 
 #include <QDebug>
@@ -60,6 +60,9 @@ void OptionButtonBoxPrivate::switchMode(ViewMode mode)
         break;
     case ViewMode::kListMode:
         listViewButton->setChecked(true);
+        break;
+    case ViewMode::kTreeMode:
+        treeViewButton->setChecked(true);
         break;
     default:
         break;
@@ -115,6 +118,9 @@ void OptionButtonBox::onUrlChanged(const QUrl &url)
         if (state & OptionButtonManager::kHideIconViewBtn)
             d->iconViewButton->setHidden(true);
 
+        if (state & OptionButtonManager::kHideTreeViewBtn)
+            d->treeViewButton->setHidden(true);
+
         if (state & OptionButtonManager::kHideDetailSpaceBtn) {
             d->detailButton->setHidden(true);
             if (d->detailButton->isChecked())
@@ -123,6 +129,7 @@ void OptionButtonBox::onUrlChanged(const QUrl &url)
     } else {
         d->listViewButton->setHidden(false);
         d->iconViewButton->setHidden(false);
+        d->treeViewButton->setHidden(false);
         d->detailButton->setHidden(false);
     }
 }
@@ -140,8 +147,13 @@ void OptionButtonBox::initializeUi()
     d->listViewButton->setCheckable(true);
     d->listViewButton->setIcon(QIcon::fromTheme("dfm_viewlist_details"));
 
+    d->treeViewButton = new DToolButton;
+    d->treeViewButton->setCheckable(true);
+    d->treeViewButton->setIcon(QIcon::fromTheme("dfm_viewlist_details"));
+
     d->buttonGroup->addButton(d->iconViewButton);
     d->buttonGroup->addButton(d->listViewButton);
+    d->buttonGroup->addButton(d->treeViewButton);
 
     d->detailButton = new DToolButton;
 #ifdef ENABLE_TESTING
@@ -165,6 +177,10 @@ void OptionButtonBox::initConnect()
         d->setViewMode(ViewMode::kListMode);
     });
 
+    connect(d->treeViewButton, &DToolButton::clicked, this, [this]() {
+        d->setViewMode(ViewMode::kTreeMode);
+    });
+
     connect(d->detailButton, &DToolButton::clicked, this, [this](bool checked) {
         TitleBarEventCaller::sendDetailViewState(this, checked);
     });
@@ -172,7 +188,7 @@ void OptionButtonBox::initConnect()
     connect(Application::instance(), &Application::viewModeChanged, d, &OptionButtonBoxPrivate::onViewModeChanged);
 
 #ifdef DTKWIDGET_CLASS_DSizeMode
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [this](){
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::sizeModeChanged, this, [this]() {
         initUiForSizeMode();
     });
 #endif
@@ -187,6 +203,7 @@ void OptionButtonBox::initUiForSizeMode()
     d->hBoxLayout = new QHBoxLayout;
     d->hBoxLayout->addWidget(d->iconViewButton);
     d->hBoxLayout->addWidget(d->listViewButton);
+    d->hBoxLayout->addWidget(d->treeViewButton);
     d->hBoxLayout->addWidget(d->detailButton);
 #ifdef DTKWIDGET_CLASS_DSizeMode
     d->hBoxLayout->setSpacing(DSizeModeHelper::element(10, 18));

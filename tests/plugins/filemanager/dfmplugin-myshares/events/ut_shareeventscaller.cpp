@@ -76,6 +76,6 @@ TEST_F(UT_ShareEventsCaller, SendSwitchDisplayMode)
     EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(0, Global::ViewMode::kNoneMode));
     EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(0, Global::ViewMode::kIconMode));
     EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(1, Global::ViewMode::kListMode));
-    EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(1, Global::ViewMode::kExtendMode));
+    EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(1, Global::ViewMode::kTreeMode));
     EXPECT_NO_FATAL_FAILURE(ShareEventsCaller::sendSwitchDisplayMode(1, Global::ViewMode::kAllViewMode));
 }
